@@ -1,5 +1,7 @@
 # FIAS | Remove Background
 
+<img src="logo.svg" width="80" height="80" align="right" />
+
 A free, open-source Figma plugin that removes image backgrounds instantly — no API key, no server, no cost. Everything runs directly in your browser using WebAssembly.
 
 ![Free](https://img.shields.io/badge/Free-100%25-1bc47d?style=flat-square) ![Open Source](https://img.shields.io/badge/Open%20Source-GitHub-181717?style=flat-square&logo=github)

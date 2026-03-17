@@ -1,0 +1,46 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#18A0FB"/>
+      <stop offset="100%" stop-color="#0560C9"/>
+    </linearGradient>
+    <!-- Transparency checkerboard -->
+    <pattern id="checker" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="rgba(255,255,255,0.18)"/>
+      <rect x="8" y="8" width="8" height="8" fill="rgba(255,255,255,0.18)"/>
+      <rect x="8" y="0" width="8" height="8" fill="rgba(255,255,255,0.05)"/>
+      <rect x="0" y="8" width="8" height="8" fill="rgba(255,255,255,0.05)"/>
+    </pattern>
+    <!-- Clip to rounded icon shape -->
+    <clipPath id="iconClip">
+      <rect width="200" height="200" rx="44"/>
+    </clipPath>
+  </defs>
+
+  <!-- Icon background -->
+  <rect width="200" height="200" rx="44" fill="url(#bgGrad)"/>
+
+  <!-- Full checkerboard (removed background) -->
+  <rect width="200" height="200" rx="44" fill="url(#checker)"/>
+
+  <!-- Image frame border -->
+  <rect x="28" y="28" width="144" height="144" rx="18"
+        stroke="white" stroke-width="1.5" stroke-opacity="0.25"/>
+
+  <!-- Subject: person silhouette (solid white = stays after removal) -->
+  <!-- Head -->
+  <circle cx="100" cy="74" r="24" fill="white"/>
+  <!-- Shoulders / body -->
+  <path d="M52 158 C52 126 72 112 100 112 C128 112 148 126 148 158 Z" fill="white"/>
+
+  <!-- Sparkle top-right (magic remove effect) -->
+  <path d="M150 42 L152.5 35 L155 42 L162 44.5 L155 47 L152.5 54 L150 47 L143 44.5 Z"
+        fill="white" opacity="0.75"/>
+  <!-- Small dot sparkles -->
+  <circle cx="140" cy="36" r="2" fill="white" opacity="0.5"/>
+  <circle cx="162" cy="56" r="1.5" fill="white" opacity="0.4"/>
+
+  <!-- Subtle inner shadow ring -->
+  <rect x="1" y="1" width="198" height="198" rx="43"
+        stroke="white" stroke-width="2" stroke-opacity="0.12"/>
+</svg>
