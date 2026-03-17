@@ -1,8 +1,13 @@
 {
-  "name": "BG Remover",
-  "id": "bg-remover-plugin",
+  "name": "FIAS | BG Remover",
+  "id": "1615716426425585227",
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",
-  "editorType": ["figma"]
+  "editorType": ["figma"],
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Loads the @imgly/background-removal AI model and WASM files from jsDelivr CDN to remove image backgrounds entirely in the browser."
+  },
+  "documentAccess": "dynamic-page"
 }
