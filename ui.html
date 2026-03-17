@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>FIAS | Remove Background</title>
+        <style>
+            :root {
+                --blue: #18a0fb;
+                --blue-dark: #0d8de3;
+                --blue-disabled: #c4e2fd;
+                --text: #1e1e1e;
+                --text-2: #999;
+                --surface: #f0f0f0;
+                --success: #1bc47d;
+                --error: #f24822;
+                --r: 6px;
+            }
+
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    sans-serif;
+                font-size: 12px;
+                background: #fff;
+                color: var(--text);
+                padding: 14px 16px 0;
+                width: 400px;
+                overflow: hidden;
+            }
+
+            /* ── Header ── */
+            .header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 13px;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .logo {
+                width: 24px;
+                height: 24px;
+                background: linear-gradient(135deg, #18a0fb 0%, #0a7fd4 100%);
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
+
+            .logo svg {
+                width: 13px;
+                height: 13px;
+                fill: white;
+            }
+
+            .title {
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: -0.2px;
+            }
+
+            .badges {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .badge {
+                font-size: 9px;
+                font-weight: 700;
+                letter-spacing: 0.3px;
+                color: var(--success);
+                background: #e6fbf2;
+                padding: 2px 6px;
+                border-radius: 99px;
+            }
+
+            .badge-gh {
+                display: flex;
+                align-items: center;
+                gap: 3px;
+                font-size: 9px;
+                font-weight: 700;
+                letter-spacing: 0.3px;
+                color: #555;
+                background: var(--surface);
+                padding: 2px 6px;
+                border-radius: 99px;
+                cursor: pointer;
+                border: none;
+                transition: background 0.15s;
+            }
+
+            .badge-gh:hover {
+                background: #e2e2e2;
+            }
+
+            .badge-gh svg {
+                width: 9px;
+                height: 9px;
+                fill: #555;
+            }
+
+            /* ── Description ── */
+            .desc {
+                font-size: 11px;
+                color: var(--text-2);
+                line-height: 1.5;
+                margin-bottom: 12px;
+            }
+
+            /* ── Model toggle ── */
+            .toggle {
+                display: flex;
+                background: var(--surface);
+                border-radius: var(--r);
+                padding: 2px;
+                margin-bottom: 12px;
+            }
+
+            .toggle-btn {
+                flex: 1;
+                padding: 5px 0;
+                border: none;
+                background: transparent;
+                border-radius: 4px;
+                font-size: 11px;
+                font-weight: 500;
+                color: var(--text-2);
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+
+            .toggle-btn.active {
+                background: #fff;
+                color: var(--text);
+                font-weight: 600;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.11);
+            }
+
+            /* ── Primary button ── */
+            #btn {
+                width: 100%;
+                height: 34px;
+                background: var(--blue);
+                color: #fff;
+                border: none;
+                border-radius: var(--r);
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.15s;
+            }
+
+            #btn:hover:not(:disabled) {
+                background: var(--blue-dark);
+            }
+
+            #btn:disabled {
+                background: var(--blue-disabled);
+                cursor: not-allowed;
+            }
+
+            /* ── Progress area ── */
+            .progress-wrap {
+                margin-top: 11px;
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+
+            .progress-wrap.show {
+                opacity: 1;
+            }
+
+            .progress-meta {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 5px;
+            }
+
+            .progress-label {
+                font-size: 11px;
+                color: var(--text-2);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 190px;
+            }
+
+            .progress-pct {
+                font-size: 11px;
+                font-weight: 700;
+                color: var(--text);
+                flex-shrink: 0;
+            }
+
+            .bar-track {
+                height: 3px;
+                background: var(--surface);
+                border-radius: 99px;
+                overflow: hidden;
+            }
+
+            .bar-fill {
+                height: 100%;
+                background: linear-gradient(90deg, #18a0fb, #0a7fd4);
+                border-radius: 99px;
+                width: 0%;
+                transition: width 0.25s ease;
+            }
+
+            /* ── Status ── */
+            #status {
+                margin-top: 9px;
+                font-size: 11px;
+                color: var(--text-2);
+                text-align: center;
+                min-height: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #status.error {
+                color: var(--error);
+            }
+
+            /* ── Footer ── */
+            .footer {
+                margin-top: 10px;
+                position: absolute;
+                bottom: 0px;
+                width: 100%;
+                padding: 8px 0 12px;
+                border-top: 1px solid #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .footer-link {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                font-size: 10px;
+                color: var(--text-2);
+                cursor: pointer;
+                background: none;
+                border: none;
+                padding: 0;
+                transition: color 0.15s;
+            }
+
+            .footer-link:hover {
+                color: var(--text);
+            }
+
+            .footer-link svg {
+                width: 11px;
+                height: 11px;
+                fill: currentColor;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M3.5 4a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm0 1a2.5 2.5 0 1 1 1.768-4.268L8 3.465l2.732-2.733A2.5 2.5 0 1 1 11.5 5a2.487 2.487 0 0 1-1.232-.327L8 6.94 5.732 4.673A2.487 2.487 0 0 1 3.5 5zm8 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM2.25 9.5a.75.75 0 0 0 0 1.5h.75v2.25a.75.75 0 0 0 1.5 0V11h7v2.25a.75.75 0 0 0 1.5 0V11h.75a.75.75 0 0 0 0-1.5H2.25z"
+                        />
+                    </svg>
+                </div>
+                <span class="title">FIAS | Remove Background</span>
+            </div>
+            <div class="badges">
+                <span class="badge">FREE</span>
+                <button
+                    class="badge-gh"
+                    id="ghBadge"
+                    title="Open Source on GitHub"
+                >
+                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+                        />
+                    </svg>
+                    Open Source
+                </button>
+            </div>
+        </div>
+
+        <!-- Short description -->
+        <p class="desc">Select an image layer and remove its background instantly — free, no API key, runs fully in your browser.</p>
+
+        <!-- Model selector: Quality / Fast -->
+        <div class="toggle">
+            <button class="toggle-btn active" data-model="medium">
+                ✦ Quality
+            </button>
+            <button class="toggle-btn" data-model="small">⚡ Fast</button>
+        </div>
+
+        <!-- Main button -->
+        <button id="btn">Remove Background</button>
+
+        <!-- Progress bar -->
+        <div class="progress-wrap" id="progressWrap">
+            <div class="progress-meta">
+                <span class="progress-label" id="progressLabel"
+                    >Loading...</span
+                >
+                <span class="progress-pct" id="progressPct">0%</span>
+            </div>
+            <div class="bar-track">
+                <div class="bar-fill" id="barFill"></div>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div id="status"></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <button class="footer-link" id="footerLink">
+                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+                    />
+                </svg>
+                github.com/fiasuz/plugin-remove-bg
+            </button>
+        </div>
+
+        <script>
+            var GITHUB_URL = "https://github.com/fiasuz/plugin-remove-bg";
+
+            var btn = document.getElementById("btn");
+            var statusEl = document.getElementById("status");
+            var progressWrap = document.getElementById("progressWrap");
+            var progressLabel = document.getElementById("progressLabel");
+            var progressPct = document.getElementById("progressPct");
+            var barFill = document.getElementById("barFill");
+
+            var selectedModel = "medium";
+
+            // Open GitHub link via Figma API
+            function openGitHub() {
+                parent.postMessage(
+                    { pluginMessage: { type: "open-url", url: GITHUB_URL } },
+                    "*",
+                );
+            }
+
+            document
+                .getElementById("ghBadge")
+                .addEventListener("click", openGitHub);
+            document
+                .getElementById("footerLink")
+                .addEventListener("click", openGitHub);
+
+            // Model toggle
+            document.querySelectorAll(".toggle-btn").forEach(function (b) {
+                b.addEventListener("click", function () {
+                    document
+                        .querySelectorAll(".toggle-btn")
+                        .forEach(function (x) {
+                            x.classList.remove("active");
+                        });
+                    b.classList.add("active");
+                    selectedModel = b.dataset.model;
+                });
+            });
+
+            // Helpers
+            function showProgress(label, pct) {
+                progressWrap.classList.add("show");
+                progressLabel.textContent = label;
+                progressPct.textContent = pct + "%";
+                barFill.style.width = pct + "%";
+            }
+
+            function hideProgress() {
+                progressWrap.classList.remove("show");
+                barFill.style.width = "0%";
+            }
+
+            function setStatus(msg, type) {
+                statusEl.innerHTML = "";
+                statusEl.className = type || "";
+                if (msg) statusEl.textContent = msg;
+            }
+
+            function showSuccess(count) {
+                statusEl.className = "";
+                statusEl.innerHTML =
+                    '<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                    '<circle cx="50" cy="50" r="47" fill="#E6FBF2"/>' +
+                    '<path d="M30 50l15 15 25-25" stroke="#1BC47D" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>' +
+                    "</svg>";
+            }
+
+            function resetUI() {
+                btn.disabled = false;
+                btn.textContent = "Remove Background";
+                hideProgress();
+            }
+
+            // Button click
+            btn.addEventListener("click", function () {
+                btn.disabled = true;
+                btn.textContent = "Processing...";
+                setStatus("");
+                showProgress("Fetching image...", 0);
+                parent.postMessage(
+                    { pluginMessage: { type: "get-image" } },
+                    "*",
+                );
+            });
+
+            // Messages from code.js
+            window.onmessage = async function (event) {
+                var msg = event.data.pluginMessage;
+                if (!msg) return;
+
+                if (msg.type === "error") {
+                    resetUI();
+                    setStatus(msg.message, "error");
+                    return;
+                }
+
+                if (msg.type === "image-data") {
+                    var current = msg.current;
+                    var total = msg.total;
+                    var isBatch = total > 1;
+                    var batchTag = isBatch
+                        ? current + "/" + total + " \u2014 "
+                        : "";
+
+                    try {
+                        showProgress(batchTag + "Loading model...", 0);
+
+                        const { removeBackground } =
+                            await import("https://esm.sh/@imgly/background-removal@1.4.5");
+
+                        var blob = new Blob([msg.bytes], { type: "image/png" });
+
+                        var highestPct = 0;
+                        var resultBlob = await removeBackground(blob, {
+                            model: selectedModel,
+                            progress: function (key, cur, tot) {
+                                if (tot > 0) {
+                                    var pct = Math.round((cur / tot) * 100);
+                                    // Cap at 99 — 100% only shows when fully applied
+                                    if (pct > highestPct)
+                                        highestPct = Math.min(pct, 99);
+                                    var label =
+                                        key && key.includes("fetch")
+                                            ? batchTag + "Loading model..."
+                                            : batchTag +
+                                              "Removing background...";
+                                    showProgress(label, highestPct);
+                                }
+                            },
+                        });
+
+                        showProgress(batchTag + "Applying...", 99);
+
+                        var bytes = new Uint8Array(
+                            await resultBlob.arrayBuffer(),
+                        );
+                        parent.postMessage(
+                            {
+                                pluginMessage: {
+                                    type: "apply-result",
+                                    bytes: bytes,
+                                    nodeId: msg.nodeId,
+                                },
+                            },
+                            "*",
+                        );
+                    } catch (err) {
+                        console.error(err);
+                        resetUI();
+                        setStatus(
+                            "Error: " + (err.message || "Unknown error"),
+                            "error",
+                        );
+                    }
+                    return;
+                }
+
+                if (msg.type === "batch-done") {
+                    showProgress("Done!", 100);
+                    setTimeout(function () {
+                        resetUI();
+                        showSuccess(msg.count);
+                    }, 300);
+                }
+            };
+        </script>
+    </body>
+</html>
